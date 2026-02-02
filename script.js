@@ -63,8 +63,8 @@ document.addEventListener('DOMContentLoaded', () => {
         chatMessages.appendChild(typing);
 
         try {
-            // Local dev server handles the POST /api/chat
-            const response = await fetch('/api/chat', {
+            // Updated to the provided Cloudflare Worker URL
+            const response = await fetch('https://restless-violet-c59a.cogniq-bharath.workers.dev/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

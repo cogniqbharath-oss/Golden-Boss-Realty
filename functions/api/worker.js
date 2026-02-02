@@ -16,8 +16,8 @@ export default {
 
     try {
       const { messages } = await request.json();
-      const apiKey = env.GEMINI_API_KEY; 
-      const model = "gemini-1.5-flash";
+      const apiKey = env.API_KEY_golden;
+      const model = "gemma-3-27b-it";
 
       const systemPrompt = "You are a luxury real estate assistant for Golden Boss Realty in Zirakpur, India. You are professional, helpful, and sophisticated. You promote 'Pavitra Luxury Residences' and other premium projects. Contact: +91 84333 73100 / +91 89509 76000. Goal: Capture leads (name, budget, type) and encourage WhatsApp contact or site visits.";
 
@@ -37,20 +37,20 @@ export default {
 
       const data = await response.json();
       let aiText = "I'm sorry, I'm having trouble connecting to the property database. Please call us at +91 84333 73100.";
-      
+
       if (data.candidates && data.candidates[0].content.parts[0].text) {
         aiText = data.candidates[0].content.parts[0].text;
       }
 
       return new Response(JSON.stringify({ response: aiText }), {
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*"
         }
       });
 
     } catch (error) {
-      return new Response(JSON.stringify({ error: error.message }), { 
+      return new Response(JSON.stringify({ error: error.message }), {
         status: 500,
         headers: { "Content-Type": "application/json" }
       });
