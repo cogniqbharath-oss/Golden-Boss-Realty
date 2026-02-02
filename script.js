@@ -31,9 +31,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatInput = document.getElementById('chat-input');
     const chatMessages = document.getElementById('chat-messages');
 
+    let conversationHistory = [];
+
     chatTrigger.addEventListener('click', () => {
         chatbotUi.style.display = 'flex';
         chatTrigger.style.display = 'none';
+
+        // Initial greeting if history is empty
+        if (conversationHistory.length === 0) {
+            const welcomeMsg = "Welcome to Golden Boss Realty! Are you looking to Buy, Invest, or Rent a property in Zirakpur today?";
+            addMessage(welcomeMsg, false);
+            conversationHistory.push({ role: 'assistant', content: welcomeMsg });
+        }
     });
 
     chatClose.addEventListener('click', () => {
@@ -54,29 +63,38 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!text) return;
 
         addMessage(text, true);
+        conversationHistory.push({ role: 'user', content: text });
         chatInput.value = '';
 
         // Typing indicator
         const typing = document.createElement('div');
         typing.className = 'msg bot-msg dim';
-        typing.textContent = '...searching listings';
+        typing.id = 'typing-indicator';
+        typing.textContent = 'Goldie is typing...';
         chatMessages.appendChild(typing);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
 
         try {
-            // Updated to the provided Cloudflare Worker URL
             const response = await fetch('https://restless-violet-c59a.cogniq-bharath.workers.dev/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    messages: [{ role: 'user', content: text }]
+                    messages: conversationHistory
                 })
             });
             const data = await response.json();
-            chatMessages.removeChild(typing);
-            addMessage(data.response || "I'm interested! Let's discuss this.");
+
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) chatMessages.removeChild(indicator);
+
+            const aiResponse = data.response || "I'd love to help you with that. Could you please share your budget and preferred location?";
+            addMessage(aiResponse, false);
+            conversationHistory.push({ role: 'assistant', content: aiResponse });
+
         } catch (error) {
-            chatMessages.removeChild(typing);
-            addMessage("I'm having trouble connecting. Feel free to call us at +91 84333 73100.");
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) chatMessages.removeChild(indicator);
+            addMessage("I'm having trouble connecting at the moment. Please feel free to call our Senior Advisor at +91 84333 73100.");
         }
     }
 

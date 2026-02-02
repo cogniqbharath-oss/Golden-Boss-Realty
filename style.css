@@ -224,6 +224,33 @@ nav.scrolled .logo img {
     align-items: center;
 }
 
+.about-image {
+    max-width: 450px;
+    /* Minimized size */
+    margin: 0 auto;
+    position: relative;
+}
+
+.about-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    border: 5px solid var(--gold);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.about-image::after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: -20px;
+    bottom: -20px;
+    border: 2px solid var(--gold);
+    border-radius: 20px;
+    z-index: -1;
+}
+
 .grid-3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
