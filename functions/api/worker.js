@@ -15,39 +15,27 @@ export default {
     }
 
     try {
-      const { messages } = await request.json();
+      const body = await request.json();
+      const messages = body.messages || [];
       const apiKey = env.API_KEY_golden;
+
+      // Strictly use the requested model
       const model = "gemma-3-27b-it";
 
+      if (!apiKey) {
+        return new Response(JSON.stringify({
+          response: "Configuration Error: API_KEY_golden is missing in Worker settings."
+        }), {
+          status: 200,
+          headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
+        });
+      }
+
       const systemPrompt = `You are "Goldie", the luxury AI assistant for Golden Boss Realty in Zirakpur, India.
-      Your goal is to guide visitors through a professional lead qualification process and build trust.
-
-      PROJECTS:
-      1. Pavitra Luxury Residences (VIP Road): 3/4 BHK Luxury apartments with a premium clubhouse.
-      2. The Golden Heights (Nagla Road): High-end residential with premium finishes and 24/7 security.
-      3. Boss Business Park (Patiala Road): Commercial investment with high ROI potential.
-
-      TONE: Professional, sophisticated, helpful, and luxury-oriented.
-
-      CONVERSATION FLOW:
-      1. Greet the visitor warmly.
-      2. Ask if they are looking to Buy, Invest, or Rent.
-      3. Ask for the Property Type (Residential/Commercial).
-      4. Ask for their Budget Range.
-      5. Ask for their Preferred Location in or around Zirakpur.
-      6. Capture their Name and Phone Number to arrange a site visit or callback.
-      7. If they show high interest (hot lead), provide the WhatsApp link: https://wa.me/918433373100
-
-      RULES:
-      - Be concise but polite.
-      - If they ask general questions about Zirakpur real estate, answer them using your knowledge.
-      - Always steer back to capturing requirements if they haven't provided them.
-      - Use bullet points for project details.
-      - If the user provides their contact details, confirm that a "Senior Investment Advisor" will call them within 2 hours.
-
-      CONTACT INFO:
-      - Phone: +91 84333 73100
-      - Address: Zirakpur, Punjab.`;
+      PROJECTS: Pavitra Luxury Residences (VIP Road), The Golden Heights (Nagla Road), Boss Business Park (Patiala Road).
+      TONE: Professional, luxury, helpful.
+      FLOW: 1. Greet, 2. Ask Buy/Invest/Rent, 3. Property Type, 4. Budget, 5. Location, 6. Name/Phone number.
+      Confirm a visit or callback once details are provided.`;
 
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
         method: "POST",
@@ -57,16 +45,29 @@ export default {
             { role: "user", parts: [{ text: systemPrompt }] },
             ...messages.map(m => ({
               role: m.role === "assistant" ? "model" : "user",
-              parts: [{ text: m.content }]
+              parts: [{ text: m.content || "" }]
             }))
-          ]
+          ],
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 500,
+          }
         })
       });
 
       const data = await response.json();
-      let aiText = "I'm sorry, I'm having trouble connecting to the property database. Please call us at +91 84333 73100.";
 
-      if (data.candidates && data.candidates[0].content.parts[0].text) {
+      if (!response.ok) {
+        return new Response(JSON.stringify({
+          response: `AI Error (${response.status}): ${data.error?.message || "Check your API key or Model access."}`
+        }), {
+          status: 200,
+          headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
+        });
+      }
+
+      let aiText = "I'm sorry, I'm having trouble processing your request. Please call +91 84333 73100.";
+      if (data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
         aiText = data.candidates[0].content.parts[0].text;
       }
 
@@ -78,9 +79,9 @@ export default {
       });
 
     } catch (error) {
-      return new Response(JSON.stringify({ error: error.message }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" }
+      return new Response(JSON.stringify({ response: `System Error: ${error.message}` }), {
+        status: 200,
+        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
       });
     }
   }

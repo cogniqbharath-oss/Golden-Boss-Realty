@@ -499,6 +499,32 @@ footer p {
     gap: 0.5rem;
 }
 
+.chat-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #f9f9f9;
+    border-top: 1px solid #eee;
+}
+
+.chip {
+    background: var(--white);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.chip:hover {
+    background: var(--gold);
+    color: var(--white);
+}
+
 .chat-input-area input {
     flex: 1;
     padding: 0.8rem;

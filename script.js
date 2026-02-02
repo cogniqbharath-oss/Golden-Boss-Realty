@@ -30,8 +30,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatSend = document.getElementById('chat-send');
     const chatInput = document.getElementById('chat-input');
     const chatMessages = document.getElementById('chat-messages');
+    const chatChips = document.getElementById('chat-chips');
 
     let conversationHistory = [];
+
+    const suggestions = {
+        initial: ["I want to Buy", "Looking to Invest", "Rent a Property"],
+        type: ["Residential", "Commercial", "Plots"],
+        location: ["VIP Road", "Nagla Road", "Patiala Road", "High Ground"],
+        budget: ["Under 50L", "50L - 1Cr", "Above 1Cr"]
+    };
+
+    function showChips(chipList) {
+        chatChips.innerHTML = '';
+        chipList.forEach(text => {
+            const chip = document.createElement('div');
+            chip.className = 'chip';
+            chip.textContent = text;
+            chip.onclick = () => {
+                chatInput.value = text;
+                handleChat();
+            };
+            chatChips.appendChild(chip);
+        });
+    }
 
     chatTrigger.addEventListener('click', () => {
         chatbotUi.style.display = 'flex';
@@ -42,6 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const welcomeMsg = "Welcome to Golden Boss Realty! Are you looking to Buy, Invest, or Rent a property in Zirakpur today?";
             addMessage(welcomeMsg, false);
             conversationHistory.push({ role: 'assistant', content: welcomeMsg });
+            showChips(suggestions.initial);
         }
     });
 
@@ -65,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
         addMessage(text, true);
         conversationHistory.push({ role: 'user', content: text });
         chatInput.value = '';
+        chatChips.innerHTML = ''; // Clear chips while waiting
 
         // Typing indicator
         const typing = document.createElement('div');
@@ -91,10 +115,28 @@ document.addEventListener('DOMContentLoaded', () => {
             addMessage(aiResponse, false);
             conversationHistory.push({ role: 'assistant', content: aiResponse });
 
+            // Logic to update chips based on AI response content
+            const lowerAI = aiResponse.toLowerCase();
+            if (lowerAI.includes("type") || lowerAI.includes("residential")) {
+                showChips(suggestions.type);
+            } else if (lowerAI.includes("budget")) {
+                showChips(suggestions.budget);
+            } else if (lowerAI.includes("location")) {
+                showChips(suggestions.location);
+            } else if (lowerAI.includes("thank you") || lowerAI.includes("advisor")) {
+                chatChips.innerHTML = ''; // No more chips for end of flow
+            } else {
+                // Fallback to budget or location if not specific
+                showChips(suggestions.location);
+            }
+
         } catch (error) {
             const indicator = document.getElementById('typing-indicator');
             if (indicator) chatMessages.removeChild(indicator);
-            addMessage("I'm having trouble connecting at the moment. Please feel free to call our Senior Advisor at +91 84333 73100.");
+
+            // Try to parse the error message if its JSON
+            console.error("Chatbot Error:", error);
+            addMessage("Service is currently unavailable. Please check your internet or try again later.");
         }
     }
 
