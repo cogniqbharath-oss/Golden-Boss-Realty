@@ -31,8 +31,53 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatInput = document.getElementById('chat-input');
     const chatMessages = document.getElementById('chat-messages');
     const chatChips = document.getElementById('chat-chips');
+    const voiceBtn = document.getElementById('voice-btn');
+    const autoSpeakToggle = document.getElementById('auto-speak-toggle');
+
+    // Voice Assistant Variables
+    let recognition = null;
+    let synthesis = window.speechSynthesis;
+    let isListening = false;
+    let autoSpeak = true; // Auto-read bot responses by default
+    let currentUtterance = null;
 
     let conversationHistory = [];
+
+    // Initialize Speech Recognition
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'en-IN'; // Indian English
+
+        recognition.onstart = () => {
+            isListening = true;
+            voiceBtn.classList.add('listening');
+            voiceBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+        };
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            chatInput.value = transcript;
+            handleChat();
+        };
+
+        recognition.onerror = (event) => {
+            console.error('Speech recognition error:', event.error);
+            stopListening();
+            if (event.error === 'no-speech') {
+                addMessage('No speech detected. Please try again.', false);
+            }
+        };
+
+        recognition.onend = () => {
+            stopListening();
+        };
+    } else {
+        // Hide voice button if not supported
+        if (voiceBtn) voiceBtn.style.display = 'none';
+    }
 
     const suggestions = {
         initial: ["I want to Buy", "Looking to Invest", "Rent a Property"],
@@ -115,6 +160,9 @@ document.addEventListener('DOMContentLoaded', () => {
             addMessage(aiResponse, false);
             conversationHistory.push({ role: 'assistant', content: aiResponse });
 
+            // Speak the response
+            speakText(aiResponse);
+
             // Logic to update chips based on AI response content
             const lowerAI = aiResponse.toLowerCase();
             if (lowerAI.includes("type") || lowerAI.includes("residential")) {
@@ -144,6 +192,82 @@ document.addEventListener('DOMContentLoaded', () => {
     chatInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') handleChat();
     });
+
+    // Voice Button Event
+    if (voiceBtn) {
+        voiceBtn.addEventListener('click', toggleVoiceInput);
+    }
+
+    // Auto-Speak Toggle Event
+    if (autoSpeakToggle) {
+        autoSpeakToggle.addEventListener('change', (e) => {
+            autoSpeak = e.target.checked;
+            if (!autoSpeak && currentUtterance) {
+                synthesis.cancel();
+            }
+        });
+    }
+
+    // Voice Assistant Functions
+    function toggleVoiceInput() {
+        if (!recognition) {
+            alert('Voice input is not supported in your browser.');
+            return;
+        }
+
+        if (isListening) {
+            stopListening();
+        } else {
+            startListening();
+        }
+    }
+
+    function startListening() {
+        if (synthesis.speaking) {
+            synthesis.cancel();
+        }
+        try {
+            recognition.start();
+        } catch (error) {
+            console.error('Error starting recognition:', error);
+        }
+    }
+
+    function stopListening() {
+        isListening = false;
+        voiceBtn.classList.remove('listening');
+        voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+    }
+
+    function speakText(text) {
+        if (!autoSpeak || !synthesis) return;
+
+        // Cancel any ongoing speech
+        synthesis.cancel();
+
+        currentUtterance = new SpeechSynthesisUtterance(text);
+        currentUtterance.lang = 'en-IN';
+        currentUtterance.rate = 1.0;
+        currentUtterance.pitch = 1.0;
+        currentUtterance.volume = 1.0;
+
+        // Visual feedback when speaking
+        currentUtterance.onstart = () => {
+            chatbotUi.classList.add('speaking');
+        };
+
+        currentUtterance.onend = () => {
+            chatbotUi.classList.remove('speaking');
+            currentUtterance = null;
+        };
+
+        currentUtterance.onerror = (event) => {
+            console.error('Speech synthesis error:', event);
+            chatbotUi.classList.remove('speaking');
+        };
+
+        synthesis.speak(currentUtterance);
+    }
 
     // Form Submission
     const enquiryForm = document.getElementById('enquiryForm');

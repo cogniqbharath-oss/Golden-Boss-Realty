@@ -1,0 +1,140 @@
+┌─────────────────────────────────────────────────────────┐
+│  GOLDEN BOSS REALTY - AI VOICE ASSISTANT CHATBOT UI     │
+└─────────────────────────────────────────────────────────┘
+
+╔═══════════════════════════════════════════════════════╗
+║  CHAT HEADER (Dark Charcoal Background)               ║
+║  ┌──────────────────────────────────────────────────┐ ║
+║  │ 🏠 ● Golden Boss Assistant    🔊[Toggle] ✕      │ ║
+║  │    (logo) (status)                (auto-speak)   │ ║
+║  └──────────────────────────────────────────────────┘ ║
+║                                                        ║
+║  CHAT MESSAGES AREA                                   ║
+║  ┌──────────────────────────────────────────────────┐ ║
+║  │                                                   │ ║
+║  │  ┌─────────────────────────────────────┐        │ ║
+║  │  │ Welcome to Golden Boss Realty!      │ (Bot)  │ ║
+║  │  │ How can I help you today?           │        │ ║
+║  │  └─────────────────────────────────────┘        │ ║
+║  │                                                   │ ║
+║  │          ┌──────────────────────────┐            │ ║
+║  │   (User) │ I want to buy a 3BHK    │            │ ║
+║  │          └──────────────────────────┘            │ ║
+║  │                                                   │ ║
+║  │  ┌─────────────────────────────────────┐        │ ║
+║  │  │ Great! What's your budget and       │ (Bot)  │ ║
+║  │  │ preferred location in Zirakpur?     │        │ ║
+║  │  └─────────────────────────────────────┘        │ ║
+║  │                                                   │ ║
+║  └──────────────────────────────────────────────────┘ ║
+║                                                        ║
+║  SUGGESTION CHIPS (Optional)                          ║
+║  ┌──────────────────────────────────────────────────┐ ║
+║  │  [VIP Road]  [Nagla Road]  [Patiala Road]       │ ║
+║  └──────────────────────────────────────────────────┘ ║
+║                                                        ║
+║  INPUT AREA                                           ║
+║  ┌──────────────────────────────────────────────────┐ ║
+║  │ ┌────────────────────────┐ [🎤] [📤]            │ ║
+║  │ │ Type or speak...       │ (mic) (send)         │ ║
+║  │ └────────────────────────┘                       │ ║
+║  └──────────────────────────────────────────────────┘ ║
+╚═══════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────┐
+│                   VOICE CONTROLS LEGEND                  │
+├─────────────────────────────────────────────────────────┤
+│                                                          │
+│  🎤 MICROPHONE BUTTON (Voice Input)                     │
+│  ├─ Normal State: Gold background (#C5A059)             │
+│  ├─ Hover State: Darker gold (#A68445)                  │
+│  └─ Listening State: Red (#ff4444) with pulsing ring    │
+│                                                          │
+│  🔊 AUTO-SPEAK TOGGLE (Voice Output)                    │
+│  ├─ ON: Gold toggle, bot speaks responses               │
+│  └─ OFF: Gray toggle, silent responses                  │
+│                                                          │
+│  VISUAL FEEDBACK                                         │
+│  ├─ Listening: Red pulsing microphone button            │
+│  └─ Speaking: Animated gradient on chat header          │
+│                                                          │
+└─────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────┐
+│                   INTERACTION FLOW                       │
+├─────────────────────────────────────────────────────────┤
+│                                                          │
+│  1. USER CLICKS MICROPHONE BUTTON                       │
+│     ↓                                                    │
+│  2. BUTTON TURNS RED & PULSES (Listening...)            │
+│     ↓                                                    │
+│  3. USER SPEAKS: "I want to buy a property"             │
+│     ↓                                                    │
+│  4. TEXT APPEARS IN INPUT FIELD (Transcribed)           │
+│     ↓                                                    │
+│  5. MESSAGE SENT AUTOMATICALLY                          │
+│     ↓                                                    │
+│  6. BOT PROCESSES & RESPONDS                            │
+│     ↓                                                    │
+│  7. RESPONSE DISPLAYED IN CHAT                          │
+│     ↓                                                    │
+│  8. RESPONSE SPOKEN ALOUD (if auto-speak is ON)         │
+│     ↓                                                    │
+│  9. HEADER SHOWS ANIMATED GRADIENT (While speaking)     │
+│                                                          │
+└─────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────┐
+│                   BUTTON STATES                          │
+├─────────────────────────────────────────────────────────┤
+│                                                          │
+│  MICROPHONE BUTTON:                                     │
+│                                                          │
+│  Normal:     [🎤]  ← Gold, ready to listen              │
+│                                                          │
+│  Listening:  [🎤]  ← Red, pulsing animation             │
+│              ⚪⚪⚪  (pulse rings)                        │
+│                                                          │
+│  Stopped:    [🎤]  ← Back to gold                       │
+│                                                          │
+│                                                          │
+│  AUTO-SPEAK TOGGLE:                                     │
+│                                                          │
+│  ON:  🔊 [●────]  ← Gold slider, voice enabled          │
+│                                                          │
+│  OFF: 🔊 [────●]  ← Gray slider, voice disabled         │
+│                                                          │
+└─────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────┐
+│                   COLOR SCHEME                           │
+├─────────────────────────────────────────────────────────┤
+│                                                          │
+│  Primary Gold:     #C5A059  (Buttons, accents)          │
+│  Dark Gold:        #A68445  (Hover states)              │
+│  Charcoal:         #1A1A1A  (Header, dark areas)        │
+│  Light Gray:       #F5F5F5  (Bot messages)              │
+│  White:            #FFFFFF  (Background)                │
+│  Error Red:        #ff4444  (Listening state)           │
+│                                                          │
+└─────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────┐
+│                   ANIMATIONS                             │
+├─────────────────────────────────────────────────────────┤
+│                                                          │
+│  1. PULSE ANIMATION (Listening State)                   │
+│     - Expanding ring from microphone button             │
+│     - Red color fading outward                          │
+│     - 1.5s duration, infinite loop                      │
+│                                                          │
+│  2. GRADIENT ANIMATION (Speaking State)                 │
+│     - Horizontal gradient sweep on header               │
+│     - Charcoal → Gold → Charcoal                        │
+│     - 2s duration, infinite loop                        │
+│                                                          │
+│  3. SLIDE UP (Chatbot Open)                             │
+│     - Smooth entrance from bottom                       │
+│     - 0.4s duration, ease timing                        │
+│                                                          │
+└─────────────────────────────────────────────────────────┘

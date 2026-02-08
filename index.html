@@ -226,7 +226,14 @@
                 <div class="bot-status"></div>
                 <span>Golden Boss Assistant</span>
             </div>
-            <i class="fas fa-times chat-close"></i>
+            <div class="voice-controls">
+                <label class="toggle-switch" title="Auto-speak responses">
+                    <input type="checkbox" id="auto-speak-toggle" checked>
+                    <span class="toggle-slider"></span>
+                    <i class="fas fa-volume-up toggle-icon"></i>
+                </label>
+                <i class="fas fa-times chat-close"></i>
+            </div>
         </div>
         <div id="chat-messages">
             <!-- Messages will be added here via JS -->
@@ -235,7 +242,10 @@
             <!-- Chips will be added here via JS -->
         </div>
         <div class="chat-input-area">
-            <input type="text" id="chat-input" placeholder="Type your message...">
+            <input type="text" id="chat-input" placeholder="Type or speak your message...">
+            <button id="voice-btn" class="voice-btn" title="Voice input">
+                <i class="fas fa-microphone"></i>
+            </button>
             <button id="chat-send"><i class="fas fa-paper-plane"></i></button>
         </div>
     </div>
